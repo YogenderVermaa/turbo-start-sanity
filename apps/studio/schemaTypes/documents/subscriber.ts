@@ -1,23 +1,32 @@
-import { defineType,defineField } from "sanity"
+import { defineType, defineField } from "sanity";
 
-export const author =  defineType({
-    name:"author",
-    type:"document",
-    title:"Author",
-    fields:[
+export const subscriber = defineType({
+    name: "subscriber",
+    type: "document",
+    title: "Subscriber",
+    fields: [
         defineField({
-            name:"email",
-            type:"string",
-            title:"Email",
-            validation:(Rule) => Rule.required().email().error("A valid email address is required")
+            name: "email",
+            type: "string",
+            title: "Email",
+            description:"Subscriber's email address",
+            validation : (rule) =>
+             rule.required().email().error("A valid email address is required")
         }),
         defineField({
             name:"subscribedAt",
             type:"datetime",
             title:"Subscribed At",
-            validation:(Rule)=>Rule.required(),
+            description:"Timestamp when the user subscribed",
+            validation:(rule)=>rule.required(),
             initialValue:() => new Date().toISOString(),
         })
     ],
+    preview: {
+        select:{
+            title:"email",
+            subtitle:"subscribedAt"
+        }
+    }
     
 })
