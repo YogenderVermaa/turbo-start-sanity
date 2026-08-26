@@ -32,7 +32,8 @@
     "next-themes": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "schema-dts": "^1.1.5"
+    "schema-dts": "^1.1.5",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
