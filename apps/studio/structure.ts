@@ -126,6 +126,12 @@ export const structure = (
         title: "Subscribers",
         icon: Mail,
       }),
+      // createList({
+      //   S,
+      //   type: "writer",
+      //   title: "Writer",
+      //   icon: Mail,
+      // }),
       S.divider(),
       S.listItem()
         .title("Site Configuration")

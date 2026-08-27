@@ -81,8 +81,25 @@ export async function POST( req:NextRequest) {
 
         logger.info("New Subscriber created Successfully" , {emailHash});
 
-        return nextResponse
-        
+        return NextResponse.json(
+            {message: "Subscribed successfully", subscribed : true},
+            { status:201}
+        );
+    }
+    catch (err){
+        logger.error("Failed to save subscriber to sanity ", {
+            error : error instanceof Error ? error.message : "unknown error",
+        });
+        return NextResponse.json(
+            {
+                error: " Failed to process subscription",
+            },
+            {
+                status: 500
+            }
+        );
+
+
     }
 
 

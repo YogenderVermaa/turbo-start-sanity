@@ -10,6 +10,7 @@ import { redirect } from "@/schemaTypes/documents/redirect";
 import { settings } from "@/schemaTypes/documents/settings";
 import { subscriber } from "./subscriber";
 
+
 export const singletons = [homePage, blogIndex, settings, footer, navbar];
 
 export const documents = [blog, page, faq, author , subscriber ,...singletons, redirect];
