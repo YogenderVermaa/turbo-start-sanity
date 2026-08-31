@@ -11,7 +11,9 @@ export const subscriber = defineType({
             title: "Email",
             description:"Subscriber's email address",
             validation : (rule) =>
-             rule.required().email().error("A valid email address is required")
+             rule.required().email().error("A valid email address is required"),
+            readOnly:true
+
         }),
         defineField({
             name:"subscribedAt",
@@ -20,6 +22,17 @@ export const subscriber = defineType({
             description:"Timestamp when the user subscribed",
             validation:(rule)=>rule.required(),
             initialValue:() => new Date().toISOString(),
+            readOnly:true
+        }),
+        defineField({
+            name:"status",
+            type:"string",
+            title:"Status",
+            description:"Subscriber's status",
+            options:{
+                list:["active","unsubscribed"]
+            },
+            initialValue:"active",
         })
     ],
     preview: {

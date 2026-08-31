@@ -4,7 +4,7 @@ import { Logger } from "@workspace/logger";
 import { client } from "@workspace/sanity/client";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { error } from "node:console";
+
 
 const logger = new Logger("Newsletter")
 
@@ -77,6 +77,7 @@ export async function POST( req:NextRequest) {
             _type: "subscriber",
             email,
             subscribedAt: new Date().toISOString(),
+            status: "active",
         });
 
         logger.info("New Subscriber created Successfully" , {emailHash});
@@ -88,7 +89,7 @@ export async function POST( req:NextRequest) {
     }
     catch (err){
         logger.error("Failed to save subscriber to sanity ", {
-            error : error instanceof Error ? error.message : "unknown error",
+            error : err instanceof Error ? err.message : "unknown error",
         });
         return NextResponse.json(
             {
