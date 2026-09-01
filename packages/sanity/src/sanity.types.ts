@@ -868,6 +868,7 @@ export type Subscriber = {
   _rev: string;
   email: string;
   subscribedAt: string;
+  status?: "active" | "unsubscribed";
 };
 
 export type Author = {

@@ -5861,6 +5861,23 @@
           "type": "string"
         },
         "optional": false
+      },
+      "status": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "union",
+          "of": [
+            {
+              "type": "string",
+              "value": "active"
+            },
+            {
+              "type": "string",
+              "value": "unsubscribed"
+            }
+          ]
+        },
+        "optional": true
       }
     }
   },

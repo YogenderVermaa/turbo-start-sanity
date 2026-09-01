@@ -2,7 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import { env } from "@workspace/env/server";
 import { Logger } from "@workspace/logger";
 import {algoliasearch} from  "algoliasearch";
-import { type NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const logger = new Logger("SearchSync");
 
@@ -14,7 +14,7 @@ function secretsMatch(provided: string,expected: string):boolean {
 }
 
 export async function POST(req: NextRequest){
-    const expected = env.SANITY_SYNC_SECRET;
+    const expected = env.SANITY_SEARCH_SYNC_SECRET;
     const authHeader = req.headers.get("authorization")?.replace("Bearer ", "");
 
     if(!(expected && authHeader) || !secretsMatch(authHeader,expected)){
@@ -24,13 +24,13 @@ export async function POST(req: NextRequest){
         });
         return new Response("Unauthorized",{status:401});
 
+
     }
 
     if(!env.ALGOLIA_APP_ID || !env.ALGOLIA_ADMIN_KEY ){
         logger.error("Algolia configuration missing in environment")
         return NextResponse.json(
-            {error : "Search service unconfigured"},
-            {status:500}
+            {error : "Search service unconfigured"},{status:500}
         );
     }
 
@@ -62,6 +62,51 @@ export async function POST(req: NextRequest){
   }
 
   const algolia = algoliasearch(env.ALGOLIA_APP_ID, env.ALGOLIA_ADMIN_KEY);
-  const index = env.ALGOLIA_INDEX_NAME;
+  const indexName = env.ALGOLIA_INDEX_NAME || "blogs";
+
+  try{
+    if(_deleted === true || seoNoIndex === true) {
+        await algolia.deleteObject({
+            indexName,
+            objectID:canonicalId,
+        });
+        logger.info("Removed document form Algolia", {
+            id:canonicalId,
+            reason: _deleted ? "deleted": "noIndex",
+        });
+        return NextResponse.json({action:"deleted", id : canonicalId});
+    }
+
+    const record  = {
+        objectID : canonicalId,
+        title: title || "Untitled",
+        description : description || "",
+        slug : typeof slug === "object" ? slug.current : slug || "",
+        category: category || "",
+        authors : Array.isArray(authors) ? authors.map((a: any) => typeof a === "object" ? a.name || a.title || "" : a).filter(Boolean):[],
+        publishedAt: publishedAt  || new Date().toISOString(),
+    };
+    await  algolia.saveObject({
+        indexName,
+        body: record,
+    });
+    logger.info("Synchorinized document to Algolia", { id:canonicalId});
+    return NextResponse.json({
+        action:"indexed",id:canonicalId
+    })
+    
+  }catch(err){
+    logger.error("Failed to sync document to Algolia", {id :canonicalId,
+        error: err instanceof Error ? err.message : "unknown",
+    });
+    return NextResponse.json(
+        {
+            error : "Failed to update search index"},
+           {status:500
+        },
+        
+    )
+
+  }
   
 }
