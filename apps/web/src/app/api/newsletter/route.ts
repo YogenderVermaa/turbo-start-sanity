@@ -77,6 +77,7 @@ export async function POST( req:NextRequest) {
             _type: "subscriber",
             email,
             subscribedAt: new Date().toISOString(),
+            status: "active",
         });
 
         logger.info("New Subscriber created Successfully" , {emailHash});
