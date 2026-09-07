@@ -57,15 +57,19 @@ export async function POST(req: NextRequest) {
                 count: 0
             });
         }
-        const records = posts.map((post:any) => ({
-            objectID:post._id,
-            title:post.title || "Untitled",
-            description:post.description || "",
-            slug:post.slug || "",
-            category:post.category  || "",
-            authors: Array.isArray(post.authors) ? post.authors: [],
+                        const records = posts.map((post: any) => ({
+            objectID: post._id,
+            title: String(post.title || "Untitled").slice(0, 300),
+            description: String(post.description || "").slice(0, 1000),
+            slug: String(post.slug || "").slice(0, 200),
+            category: String(post.category || "").slice(0, 100),
+            authors: Array.isArray(post.authors) 
+                ? post.authors.map((a: any) => String(typeof a === "object" ? a.name || "" : a).slice(0, 100))
+                : [],
             publishedAt: post.publishedAt || new Date().toISOString(),
         }));
+
+
 
         const algolia = algoliasearch(env.ALGOLIA_APP_ID,env.ALGOLIA_ADMIN_KEY);
         const indexName = env.ALGOLIA_INDEX_NAME || "blogs";
@@ -82,12 +86,13 @@ export async function POST(req: NextRequest) {
             count: records.length,
         });
     } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "unknown";
         logger.error("Backfill failed", {
-            error : error instanceof Error ? error.message :"unknown",
+            error: errorMessage,
         });
         return NextResponse.json(
-            { error : "Backfill operation failed"},
-            {status:500}
+            { error: "Backfill operation failed", details: errorMessage },
+            { status: 500 }
         );
     }
 }

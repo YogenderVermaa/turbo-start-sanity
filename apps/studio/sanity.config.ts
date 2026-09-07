@@ -14,6 +14,7 @@ import { presentationUrl } from "@/plugins/presentation-url";
 import { schemaTypes, singletonTypes } from "@/schemaTypes/index";
 import { structure } from "@/structure";
 import { getPresentationUrl } from "@/utils/helper";
+import { SeoAndIndexView } from "./components/seo-and-index-view";
 
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID ?? "";
 const dataset = process.env.SANITY_STUDIO_DATASET ?? "production";
@@ -51,6 +52,15 @@ export default defineConfig({
     }),
     structureTool({
       structure,
+      defaultDocumentNode: (S, { schemaType }) => {
+        if (schemaType === "blog" || schemaType === "page") {
+          return S.document().views([
+            S.view.form(),
+            S.view.component(SeoAndIndexView).title("SEO & Index"),
+          ]);
+        }
+        return S.document().views([S.view.form()]);
+      },
     }),
     presentationUrl(),
     visionTool(),
