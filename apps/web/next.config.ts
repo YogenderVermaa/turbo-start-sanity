@@ -12,9 +12,6 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   cacheComponents: true,
   cacheLife: { default: sanity },
-  experimental: {
-    inlineCss: true,
-  },
   logging: {
     fetches: {},
   },
