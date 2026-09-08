@@ -40,10 +40,12 @@
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@sanity/codegen": "^7.0.3",
+    "@tailwindcss/postcss": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@workspace/typescript-config": "workspace:*",
-    "dotenv": "^17.3.1"
+    "dotenv": "^17.3.1",
+    "tailwindcss": "catalog:"
   }
 }
