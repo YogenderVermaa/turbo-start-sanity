@@ -183,6 +183,9 @@ importers:
       '@sanity/visual-editing':
         specifier: ^5.4.3
         version: 5.4.3(@sanity/client@7.26.2)(@sanity/types@6.10.1(@types/react@19.2.14))(next@16.2.9(@babel/core@7.29.7)(@playwright/test@1.58.2)(babel-plugin-react-compiler@19.1.0-rc.2)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react-is@19.2.8)(react@19.2.4)(styled-components@6.3.11(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(typescript@5.9.2)
+      '@tailwindcss/postcss':
+        specifier: 'catalog:'
+        version: 4.2.1
       '@tanstack/react-query':
         specifier: ^5.90.21
         version: 5.90.21(react@19.2.4)
@@ -234,6 +237,9 @@ importers:
       schema-dts:
         specifier: ^1.1.5
         version: 1.1.5
+      tailwindcss:
+        specifier: 'catalog:'
+        version: 4.2.1
       tw-animate-css:
         specifier: 'catalog:'
         version: 1.4.0
@@ -247,9 +253,6 @@ importers:
       '@sanity/codegen':
         specifier: ^7.0.3
         version: 7.0.3(@oclif/core@4.14.0)(@sanity/cli-core@3.2.0(@noble/hashes@2.0.1)(@types/node@25.5.0)(babel-plugin-react-compiler@19.1.0-rc.2)(esbuild@0.28.1)(terser@5.37.0)(vitest@3.2.6(@types/node@25.5.0)(jiti@2.7.0)(jsdom@29.1.1(@noble/hashes@2.0.1))(lightningcss@1.33.0)(terser@5.37.0)(tsx@4.23.12)(yaml@2.9.0))(yaml@2.9.0))(react@19.2.4)
-      '@tailwindcss/postcss':
-        specifier: 'catalog:'
-        version: 4.2.1
       '@types/node':
         specifier: 'catalog:'
         version: 25.5.0
@@ -265,9 +268,6 @@ importers:
       dotenv:
         specifier: ^17.3.1
         version: 17.3.1
-      tailwindcss:
-        specifier: 'catalog:'
-        version: 4.2.1
 
   packages/env:
     dependencies:
