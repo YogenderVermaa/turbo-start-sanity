@@ -1,8 +1,7 @@
 @import "tailwindcss";
 @import "../../node_modules/tw-animate-css/dist/tw-animate.css";
-@source "../../../apps/**/*.{ts,tsx}";
-@source "../../../packages/**/*.{ts,tsx}";
-@source "../**/*.{ts,tsx}";
+@source "../../../../apps/**/*.{ts,tsx}";
+@source "../../../../packages/**/*.{ts,tsx}";
 
 /* Relative path, not the bare specifier: Turbopack's postcss sandbox can't
    resolve node_modules from a CSS file inside a workspace package. */
