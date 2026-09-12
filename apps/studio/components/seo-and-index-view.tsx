@@ -33,7 +33,7 @@ const RAW_SITE_URL = process.env.SANITY_STUDIO_PRESENTATION_URL || "http://local
 
 const TITLE_MIN = 30;
 const TITLE_MAX = 60;
-const DESC_MIN = 120;
+const DESC_MIN = 140;
 const DESC_MAX = 160;
 
 type AlgoliaStatus = "loading" | "indexed" | "not_indexed" | "error";
@@ -52,11 +52,12 @@ export const SeoAndIndexView: UserViewComponent = (props) => {
   const canonicalId = (displayed?._id || "").replace(/^drafts\./, "");
   const isDraft = (displayed?._id || "").startsWith("drafts.");
 
+  // Fallback hierarchy per seo-fields.ts description
   const title =
-    displayed?.ogTitle || displayed?.seoTitle || displayed?.title || "Untitled Document";
+    displayed?.seoTitle || displayed?.title || displayed?.ogTitle || "Untitled Document";
 
   const rawDescription =
-    displayed?.ogDescription || displayed?.seoDescription || displayed?.description || "";
+    displayed?.seoDescription || displayed?.description || displayed?.ogDescription || "";
   const description =
     rawDescription ||
     "No description provided. Add a description to help search engines understand the page.";
@@ -392,45 +393,91 @@ export const SeoAndIndexView: UserViewComponent = (props) => {
             )}
 
             {algoliaStatus === "indexed" && (
-              <Card padding={3} radius={2} tone="positive" border>
+              <Card
+                padding={3}
+                radius={2}
+                tone={isNoIndex ? "critical" : "positive"}
+                border
+              >
                 <Flex align="center" justify="space-between">
                   <Flex align="center" gap={3}>
-                    <CheckCircle2 size={20} color="#15803d" />
+                    {isNoIndex ? (
+                      <ShieldAlert size={20} color="#dc2626" />
+                    ) : (
+                      <CheckCircle2 size={20} color="#15803d" />
+                    )}
                     <Stack space={1}>
                       <Flex align="center" gap={2}>
-                        <Text size={1} weight="bold">Live in Algolia Search Index</Text>
-                        <Badge tone="primary" mode="outline">Index: {ALGOLIA_INDEX_NAME}</Badge>
+                        <Text size={1} weight="bold">
+                          {isNoIndex
+                            ? "⚠️ seoNoIndex is active, but document is sitting in Algolia index!"
+                            : "Live in Algolia Search Index"}
+                        </Text>
+                        <Badge tone={isNoIndex ? "critical" : "primary"} mode="outline">
+                          Index: {ALGOLIA_INDEX_NAME}
+                        </Badge>
                       </Flex>
                       <Text size={1} muted>
-                        ObjectID: <code style={{ fontSize: "11px" }}>{canonicalId}</code>
+                        {isNoIndex
+                          ? "This document should be purged from search. Trigger sync or unpublish to remove."
+                          : `ObjectID: ${canonicalId}`}
                       </Text>
                     </Stack>
                   </Flex>
-                  <Badge tone="positive">Indexed</Badge>
+                  <Badge tone={isNoIndex ? "critical" : "positive"}>
+                    {isNoIndex ? "Desynced (In Index)" : "Indexed"}
+                  </Badge>
                 </Flex>
               </Card>
             )}
 
             {algoliaStatus === "not_indexed" && (
-              <Card padding={3} radius={2} tone={isNoIndex ? "critical" : "caution"} border>
+              <Card
+                padding={3}
+                radius={2}
+                tone={!isDraft && !isNoIndex ? "critical" : isNoIndex ? "default" : "caution"}
+                border
+              >
                 <Flex align="center" justify="space-between">
                   <Flex align="center" gap={3}>
-                    {isNoIndex ? <ShieldAlert size={20} color="#dc2626" /> : <AlertCircle size={20} color="#d97706" />}
+                    {!isDraft && !isNoIndex ? (
+                      <AlertCircle size={20} color="#dc2626" />
+                    ) : isNoIndex ? (
+                      <CheckCircle2 size={20} color="#15803d" />
+                    ) : (
+                      <AlertCircle size={20} color="#d97706" />
+                    )}
                     <Stack space={1}>
                       <Text size={1} weight="bold">
-                        {isNoIndex
-                          ? "Excluded from Search (seoNoIndex is True)"
-                          : isDraft
-                            ? "Draft Post (Not published yet)"
-                            : "Not Found in Algolia Index"}
+                        {!isDraft && !isNoIndex
+                          ? "✗ Not found in Algolia — but this post is published. Something is out of sync."
+                          : isNoIndex
+                            ? "✓ Excluded from search index as requested (seoNoIndex is active)"
+                            : "Draft post (Not published, correctly omitted from search index)"}
                       </Text>
                       <Text size={1} muted>
-                        Publishing this document in Sanity will automatically sync it to Algolia.
+                        {!isDraft && !isNoIndex
+                          ? "Run the search backfill or trigger a webhook sync to index this published post."
+                          : isNoIndex
+                            ? "Search bots and user queries will not find this document."
+                            : "Drafts are never indexed. Publish the document to add it to Algolia."}
                       </Text>
                     </Stack>
                   </Flex>
-                  <Badge tone={isNoIndex ? "critical" : "caution"}>
-                    {isNoIndex ? "NoIndex" : "Not In Search"}
+                  <Badge
+                    tone={
+                      !isDraft && !isNoIndex
+                        ? "critical"
+                        : isNoIndex
+                          ? "positive"
+                          : "caution"
+                    }
+                  >
+                    {!isDraft && !isNoIndex
+                      ? "Missing from Index"
+                      : isNoIndex
+                        ? "Excluded"
+                        : "Draft (Unindexed)"}
                   </Badge>
                 </Flex>
               </Card>

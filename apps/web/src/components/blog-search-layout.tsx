@@ -8,18 +8,20 @@ import { BlogSearchResults } from "@/components/blog-search-results";
 import { useBlogSearch } from "@/hooks/use-blog-search";
 
 type BlogSearchLayoutProps = {
+  activeCategory?: string;
   categoryFilter: ReactNode;
   featured: ReactNode;
   list: ReactNode;
 };
 
 export function BlogSearchLayout({
+  activeCategory = "",
   categoryFilter,
   featured,
   list,
 }: Readonly<BlogSearchLayoutProps>) {
   const { searchQuery, setSearchQuery, results, isSearching, hasQuery, error } =
-    useBlogSearch();
+    useBlogSearch(activeCategory);
 
   const isDeadEnd =
     hasQuery && !isSearching && (Boolean(error) || results.length === 0);

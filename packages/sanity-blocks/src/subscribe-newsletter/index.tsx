@@ -7,8 +7,8 @@ import type { SanityImageData } from "@workspace/sanity-blocks/internal/sanity-i
 import { SanityImage } from "@workspace/sanity-blocks/internal/sanity-image";
 import { cn } from "@workspace/tailwind-config/utils";
 import { Button } from "@workspace/ui/components/button";
-import { LoaderCircle } from "lucide-react";
-import type { ComponentProps } from "react";
+import { CheckCircle2, LoaderCircle } from "lucide-react";
+import { type ComponentProps, type FormEvent, useState } from "react";
 import { useFormStatus } from "react-dom";
 
 export interface NewsletterTestimonial {
@@ -29,18 +29,19 @@ export interface SubscribeNewsletterProps {
   title?: string | null;
 }
 
-function SubscribeNewsletterButton() {
+function SubscribeNewsletterButton({ isSubmitting }: { isSubmitting?: boolean }) {
   const { pending } = useFormStatus();
+  const loading = pending || isSubmitting;
   return (
     <Button
-      aria-label={pending ? "Subscribing..." : "Subscribe to newsletter"}
+      aria-label={loading ? "Subscribing..." : "Subscribe to newsletter"}
       className="shrink-0 rounded-none px-5 py-2.5"
-      disabled={pending}
+      disabled={loading}
       size="sm"
       type="submit"
       variant="secondary"
     >
-      {pending ? (
+      {loading ? (
         <LoaderCircle
           aria-hidden="true"
           className="animate-spin"
@@ -51,7 +52,7 @@ function SubscribeNewsletterButton() {
         "Subscribe"
       )}
       <span aria-live="polite" className="sr-only" role="status">
-        {pending ? "Subscribing…" : ""}
+        {loading ? "Subscribing…" : ""}
       </span>
     </Button>
   );
@@ -100,7 +101,7 @@ function TestimonialPanel({
 }
 
 export function SubscribeNewsletter({
-  action,
+  action = "/api/newsletter",
   title,
   subTitle,
   helperText,
@@ -108,8 +109,46 @@ export function SubscribeNewsletter({
   onSubmit,
   testimonial,
 }: Readonly<SubscribeNewsletterProps>) {
-  // A cleared Sanity object is still truthy; only treat the testimonial as
-  // present when it actually carries content.
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState<string>("");
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    if (onSubmit) {
+      onSubmit(e as any);
+      return;
+    }
+
+    e.preventDefault();
+    setStatus("loading");
+    setMessage("");
+
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setStatus("error");
+        setMessage(data?.error || "Failed to subscribe. Please try again.");
+        return;
+      }
+
+      setStatus("success");
+      setMessage(data?.message || "Subscribed successfully!");
+      setEmail("");
+    } catch {
+      setStatus("error");
+      setMessage("Network error. Please try again later.");
+    }
+  };
+
   const hasTestimonialContent = Boolean(
     testimonial &&
       (testimonial.eyebrow ||
@@ -143,22 +182,35 @@ export function SubscribeNewsletter({
               )}
             </div>
             <div className="flex w-full flex-col items-start gap-3">
-              <form
-                action={action}
-                className="flex w-full items-center gap-1.5 bg-muted py-1.5 pr-1.5 pl-4 has-[input:focus-visible]:[outline:2px_dotted_var(--foreground)] has-[input:focus-visible]:outline-offset-2"
-                method={method ?? "post"}
-                onSubmit={onSubmit}
-              >
-                <input
-                  aria-label="Email address"
-                  className="w-full min-w-0 flex-1 bg-transparent py-1.5 text-base text-foreground outline-none [--autofill-bg:var(--muted)] placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
-                  name="email"
-                  placeholder="Enter your email address"
-                  required
-                  type="email"
-                />
-                <SubscribeNewsletterButton />
-              </form>
+              {status === "success" ? (
+                <div className="flex items-center gap-2 rounded bg-accent-green/20 p-3 text-accent-green-foreground">
+                  <CheckCircle2 className="size-5 shrink-0" />
+                  <span className="font-medium text-sm">{message}</span>
+                </div>
+              ) : (
+                <form
+                  action={action}
+                  className="flex w-full items-center gap-1.5 bg-muted py-1.5 pr-1.5 pl-4 has-[input:focus-visible]:[outline:2px_dotted_var(--foreground)] has-[input:focus-visible]:outline-offset-2"
+                  method={method ?? "post"}
+                  onSubmit={handleSubmit}
+                >
+                  <input
+                    aria-label="Email address"
+                    className="w-full min-w-0 flex-1 bg-transparent py-1.5 text-base text-foreground outline-none [--autofill-bg:var(--muted)] placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0"
+                    disabled={status === "loading"}
+                    name="email"
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email address"
+                    required
+                    type="email"
+                    value={email}
+                  />
+                  <SubscribeNewsletterButton isSubmitting={status === "loading"} />
+                </form>
+              )}
+              {status === "error" && (
+                <p className="text-destructive text-sm">{message}</p>
+              )}
               {helperText && (
                 <RichText
                   className="text-muted-foreground text-sm leading-5 [&_a]:rounded-none [&_a]:font-medium [&_a]:text-foreground [&_a]:underline [&_a]:decoration-solid"
