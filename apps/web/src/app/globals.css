@@ -3,25 +3,9 @@
 @plugin "../../node_modules/@tailwindcss/typography";
 
 @source "../..";
-@source "../";
-@source ".";
-@source "../../../packages/ui";
-@source "../../../packages/sanity-blocks";
-@source "../../../packages/tailwind-config";
 @source "../../../../packages/ui";
 @source "../../../../packages/sanity-blocks";
 @source "../../../../packages/tailwind-config";
-@source "../../../apps";
-@source "../../../../apps";
-@source "../../../packages";
-@source "../../../../packages";
-@source "../../packages";
-@source "../../../packages/**/*.{ts,tsx}";
-@source "../../../../packages/**/*.{ts,tsx}";
-@source "../../packages/**/*.{ts,tsx}";
-@source "../../../../apps/**/*.{ts,tsx}";
-@source "../../../apps/**/*.{ts,tsx}";
-@source "../../..";
 @source "../../../..";
 
 @custom-variant dark (&:is(.dark *));
