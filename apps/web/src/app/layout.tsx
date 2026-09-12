@@ -1,4 +1,4 @@
-import "./globals.css";
+import "./globals.generated.css";
 
 import {
   type DynamicFetchOptions,
