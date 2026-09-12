@@ -2,6 +2,7 @@
 @import "@workspace/ui/globals.css";
 
 @source "../..";
-@source "../../../../packages/**/*.{ts,tsx}";
 @source "../../../packages/**/*.{ts,tsx}";
+@source "../../../../packages/**/*.{ts,tsx}";
+@source "../../packages/**/*.{ts,tsx}";
 @source "../../node_modules/@workspace/**/*.{ts,tsx}";
