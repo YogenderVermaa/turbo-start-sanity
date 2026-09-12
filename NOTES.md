@@ -1,6 +1,6 @@
 # Project Evaluation & Architecture Notes
 
-**Production Web URL:** https://turbo-start-sanity-web-olxq.vercel.app  
+**Production Web URL:** https://robotostudio.vercel.app  
 **Sanity Studio URL:** https://yogi-turbo-sanity.sanity.studio  
 **Algolia Application ID:** QWFA8XWS6M  
 **Algolia Index Name:** blogs  

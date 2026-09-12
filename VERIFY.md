@@ -2,7 +2,7 @@
 
 This document contains the exact commands executed against the live production deployment and the actual responses returned.
 
-- **Live Production URL:** `https://turbo-start-sanity-web-olxq.vercel.app`
+- **Live Production URL:** `https://robotostudio.vercel.app`
 - **Sanity Studio URL:** `https://yogi-turbo-sanity.sanity.studio`
 - **Algolia Application ID:** `QWFA8XWS6M`
 - **Algolia Index Name:** `blogs`
@@ -29,7 +29,7 @@ $body = @{
     publishedAt = "2026-09-08T12:00:00Z"
 } | ConvertTo-Json
 
-Invoke-RestMethod -Uri "https://turbo-start-sanity-web-olxq.vercel.app/api/search-sync" -Method POST -Headers $headers -Body $body | ConvertTo-Json
+Invoke-RestMethod -Uri "https://robotostudio.vercel.app/api/search-sync" -Method POST -Headers $headers -Body $body | ConvertTo-Json
 ```
 
 **Actual Output:**
@@ -56,7 +56,7 @@ $body = @{
     _deleted = $true
 } | ConvertTo-Json
 
-Invoke-RestMethod -Uri "https://turbo-start-sanity-web-olxq.vercel.app/api/search-sync" -Method POST -Headers $headers -Body $body | ConvertTo-Json
+Invoke-RestMethod -Uri "https://robotostudio.vercel.app/api/search-sync" -Method POST -Headers $headers -Body $body | ConvertTo-Json
 ```
 
 **Actual Output:**
@@ -84,7 +84,7 @@ $body = @{
     slug = "confidential-draft"
 } | ConvertTo-Json
 
-Invoke-RestMethod -Uri "https://turbo-start-sanity-web-olxq.vercel.app/api/search-sync" -Method POST -Headers $headers -Body $body | ConvertTo-Json
+Invoke-RestMethod -Uri "https://robotostudio.vercel.app/api/search-sync" -Method POST -Headers $headers -Body $body | ConvertTo-Json
 ```
 
 **Actual Output:**
@@ -116,9 +116,9 @@ $body = @{
 } | ConvertTo-Json
 
 # Send delivery 1
-$res1 = Invoke-RestMethod -Uri "https://turbo-start-sanity-web-olxq.vercel.app/api/search-sync" -Method POST -Headers $headers -Body $body
+$res1 = Invoke-RestMethod -Uri "https://robotostudio.vercel.app/api/search-sync" -Method POST -Headers $headers -Body $body
 # Send delivery 2 (identical)
-$res2 = Invoke-RestMethod -Uri "https://turbo-start-sanity-web-olxq.vercel.app/api/search-sync" -Method POST -Headers $headers -Body $body
+$res2 = Invoke-RestMethod -Uri "https://robotostudio.vercel.app/api/search-sync" -Method POST -Headers $headers -Body $body
 
 [PSCustomObject]@{ FirstDelivery = $res1; SecondDelivery = $res2 } | ConvertTo-Json
 ```
@@ -139,7 +139,7 @@ $res2 = Invoke-RestMethod -Uri "https://turbo-start-sanity-web-olxq.vercel.app/a
 
 **Index Query Verification:**
 ```powershell
-Invoke-RestMethod -Uri "https://turbo-start-sanity-web-olxq.vercel.app/api/blog/search?q=Idempotency" | ConvertTo-Json
+Invoke-RestMethod -Uri "https://robotostudio.vercel.app/api/blog/search?q=Idempotency" | ConvertTo-Json
 ```
 
 **Actual Output:**
@@ -167,7 +167,7 @@ Invoke-RestMethod -Uri "https://turbo-start-sanity-web-olxq.vercel.app/api/blog/
 
 **Command:**
 ```powershell
-Invoke-RestMethod -Uri "https://turbo-start-sanity-web-olxq.vercel.app/api/blog/search?q=a&page=1&hitsPerPage=2" | ConvertTo-Json
+Invoke-RestMethod -Uri "https://robotostudio.vercel.app/api/blog/search?q=a&page=1&hitsPerPage=2" | ConvertTo-Json
 ```
 
 **Actual Output:**
@@ -211,7 +211,7 @@ $headers = @{
 $body = @{ _id = "test"; _type = "blog" } | ConvertTo-Json
 
 try {
-    Invoke-WebRequest -Uri "https://turbo-start-sanity-web-olxq.vercel.app/api/search-sync" -Method POST -Headers $headers -Body $body
+    Invoke-WebRequest -Uri "https://robotostudio.vercel.app/api/search-sync" -Method POST -Headers $headers -Body $body
 } catch {
     $_.Exception.Response.StatusCode.value__
 }
