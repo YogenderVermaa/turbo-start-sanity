@@ -1,4 +1,6 @@
 @import "@workspace/ui/globals.css";
 
-@source "../../**/*.{ts,tsx}";
+@source "../..";
 @source "../../../../packages/**/*.{ts,tsx}";
+@source "../../../packages/**/*.{ts,tsx}";
+@source "../../node_modules/@workspace/**/*.{ts,tsx}";
